@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base (headings + body) ---------- */
+@layer base {
+  :root {
+    /* color helpers */
+    --forest: #0e3b3a;
+    --leaf: #1e5e57;
+    --gold: #d7b24a;
+    --cream: #fff9ef;
+  }
+
+  body {
+    @apply font-body text-slate-800 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold shadow-soft transition hover:-translate-y-0.5;
+  }
+  .btn-primary { @apply bg-[var(--gold)] text-[var(--forest)] hover:opacity-90; }
+  .btn-outline { @apply border border-white/80 text-white hover:bg-white hover:text-[var(--forest)]; }
+  .btn-dark { @apply bg-black text-white rounded-full px-4 py-2 text-sm hover:opacity-90; }
+
+  /* Cards & layout helpers */
+  .card { @apply bg-white rounded-2xl shadow-soft overflow-hidden; }
+  .section { @apply py-16 md:py-24; }
+  .container { @apply max-w-6xl mx-auto px-4; }
+
+  /* Forms */
+  .input { @apply w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:ring-2 focus:ring-leaf/30; }
+  .label { @apply text-sm font-medium text-slate-600; }
+
+  /* Hero dots */
+  .dots { @apply flex items-center justify-center gap-2 mt-6; }
+  .dots > span { @apply w-2.5 h-2.5 rounded-full bg-white/70; }
+  .dots > span.active { @apply bg-white; }
+
+  /* Optional: subtle glass for over-hero nav */
+  .nav-glass { @apply bg-white/95 shadow; }
+}
+
+/* ---------- Utilities extension ---------- */
+@layer utilities {
+  .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+}
