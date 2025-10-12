@@ -1,9 +1,11 @@
+import Concert from "../assets/concert.JPG";
+import CampFire from "../assets/camp-fire.jpeg";
 import React from 'react'
 
 const FEATURES = [
-  { title: 'Open Air Music Concerts', img: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1000&auto=format&fit=crop', desc:'Groove beneath starlit skies with soulful live melodies.'},
+  { title: 'Open Air Music Concerts', img: Concert , desc:'Groove beneath starlit skies with soulful live melodies.'},
   { title: 'Sunrise Treks', img: 'https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1000&auto=format&fit=crop', desc:'Witness golden horizons on gentle, scenic trails.'},
-  { title: 'Night Fun & Fire', img: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1000&auto=format&fit=crop', desc:'Cozy bonfires & storytelling under a million stars.'},
+  { title: 'Night Fun & Fire', img: CampFire, desc:'Cozy bonfires & storytelling under a million stars.'},
   { title: 'Pure Nature Immersion', img: 'https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=1000&auto=format&fit=crop', desc:'Lakes, forests & serene moments to recharge.'},
 ]
 

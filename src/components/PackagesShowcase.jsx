@@ -198,7 +198,7 @@ async function fetchPackages() {
 }
 
 const COVER =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop";
+  "https://assets-news.housing.com/news/wp-content/uploads/2022/09/06125417/North-Indian-14.png";
 
 // ✅ your provided images
 const PKG_IMAGES = {

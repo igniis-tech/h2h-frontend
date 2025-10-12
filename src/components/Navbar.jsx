@@ -1,3 +1,4 @@
+import logo from "../assets/logo.png";
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { startSSO } from '../api'
@@ -52,7 +53,7 @@ export default function Navbar() {
       <div className="container grid grid-cols-[auto,1fr,auto] items-center gap-4 py-3">
         {/* Left: logo */}
         <Link to="/" className="flex items-center gap-3">
-          <img src="https://i.imgur.com/0Xl3OQv.png" alt="Highway to Heal" className="h-8 w-auto" />
+          <img src={logo} alt="Highway to Heal" className="h-8 w-auto" />
         </Link>
 
         {/* Center: nav (desktop) */}

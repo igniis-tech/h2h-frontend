@@ -15,7 +15,7 @@ export default function Itinerary(){
   return (
     <section className="section relative">
       <div className="absolute inset-0 -z-10">
-        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1920&auto=format&fit=crop" className="w-full h-full object-cover opacity-40" />
+        <img src="https://junglecamp.in/uploads/2025/05/most-peaceful-place-in-north-india-where-serenity-feels-effortless.webp" className="w-full h-full object-cover opacity-40" />
       </div>
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-forest">A Week of Pure Bliss: Itinerary Highlights</h2>

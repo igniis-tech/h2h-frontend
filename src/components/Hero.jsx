@@ -38,6 +38,9 @@
 //     </section>
 //   )
 // }
+import Event from "../assets/Event.png";
+import Journey from "../assets/journey.png";
+import Reconnect from "../assets/reconnect.png";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -48,17 +51,20 @@ const slides = [
     blurb: "Unwind. Reconnect. Discover. Your Week-Long Mountain Escape Awaits.",
   },
   {
-    img: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1920&auto=format&fit=crop",
+    //img: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1920&auto=format&fit=crop",
+    img: Journey,
     title: "THE JOURNEY",
     blurb: "Mindful treks, bonfires, starry skies—curated for deep reset.",
   },
   {
-    img: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1920&auto=format&fit=crop",
+    //img: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1920&auto=format&fit=crop",
+    img: Event,
     title: "EVENT DETAILS",
     blurb: "7 days • Guided sessions • Local stays • Limited slots.",
   },
   {
-    img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1920&auto=format&fit=crop",
+    //img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1920&auto=format&fit=crop",
+    img: Reconnect,
     title: "RECONNECT",
     blurb: "Step away from noise—step into your breath and the hills.",
   },
