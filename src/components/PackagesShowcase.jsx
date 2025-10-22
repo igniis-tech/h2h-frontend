@@ -1,7 +1,7 @@
+
 // import React, { useEffect, useMemo, useRef, useState } from "react";
 // import { Link } from "react-router-dom";
 
-// // Replace if you already export this in src/api.js
 // const API_BASE = import.meta.env.VITE_API_BASE || "https://h2h-backend-vpk9.vercel.app/api";
 // async function fetchPackages() {
 //   const res = await fetch(`${API_BASE}/packages`);
@@ -9,20 +9,24 @@
 //   return res.json();
 // }
 
-// // Optional: cover image to match the “poster” vibe
 // const COVER =
-//   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop";
+//   "https://assets-news.housing.com/news/wp-content/uploads/2022/09/06125417/North-Indian-14.png";
 
-// // Image suggestions per package (swap with your own if you have)
+// // ✅ your provided images
 // const PKG_IMAGES = {
-//   Tent: "https://images.unsplash.com/photo-1504280390368-3971f660c181?q=80&w=1200&auto=format&fit=crop",
-//   Swiss: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop",
-//   Room: "https://images.unsplash.com/photo-1501117716987-c8e1ecb2101f?q=80&w=1200&auto=format&fit=crop",
+//   Tent: "https://images.pexels.com/photos/776117/pexels-photo-776117.jpeg",
+//   Swiss:
+//     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
+//   Room:
+//     "https://pix8.agoda.net/hotelImages/34244526/-1/85086b7919064ea18c68a36220862031.jpg?ce=0&s=1024x",
 // };
+
+// const DEFAULT_IMG =
+//   "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop";
 
 // export default function PackagesShowcase() {
 //   const [items, setItems] = useState([]);
-//   const [i, setI] = useState(0); // current center index
+//   const [i, setI] = useState(0);
 //   const [dragX, setDragX] = useState(0);
 //   const startX = useRef(null);
 
@@ -31,26 +35,27 @@
 //     (async () => {
 //       try {
 //         const data = await fetchPackages();
-//         const active = data.filter(p => p.active);
+//         const active = (data || []).filter((p) => p.active);
 //         if (!alive) return;
-//         // Keep only Tent/Swiss/Room order if available
+
 //         const order = ["Tent", "Swiss", "Room"];
 //         const sorted = [...active].sort(
 //           (a, b) => order.indexOf(a.name) - order.indexOf(b.name)
 //         );
 //         setItems(sorted.slice(0, 3));
-//         if (sorted.length) setI(1); // start with middle selected (nice effect)
+//         setI(sorted.length >= 2 ? 1 : 0);
 //       } catch (e) {
 //         console.error(e);
 //       }
 //     })();
-//     return () => { alive = false; };
+//     return () => {
+//       alive = false;
+//     };
 //   }, []);
 
-//   const next = () => setI(v => Math.min(v + 1, (items.length || 1) - 1));
-//   const prev = () => setI(v => Math.max(v - 1, 0));
+//   const next = () => setI((v) => Math.min(v + 1, (items.length || 1) - 1));
+//   const prev = () => setI((v) => Math.max(v - 1, 0));
 
-//   // Keyboard support
 //   useEffect(() => {
 //     const onKey = (e) => {
 //       if (e.key === "ArrowRight") next();
@@ -60,7 +65,6 @@
 //     return () => window.removeEventListener("keydown", onKey);
 //   }, [items.length]);
 
-//   // Drag/swipe
 //   const onDown = (e) => {
 //     e.currentTarget.setPointerCapture?.(e.pointerId);
 //     startX.current = e.clientX;
@@ -72,7 +76,7 @@
 //   };
 //   const onUp = () => {
 //     if (startX.current == null) return;
-//     const threshold = 60; // px
+//     const threshold = 60;
 //     if (dragX <= -threshold) next();
 //     else if (dragX >= threshold) prev();
 //     setDragX(0);
@@ -83,12 +87,10 @@
 
 //   return (
 //     <section className="relative overflow-hidden">
-//       {/* Background cover */}
 //       <img src={COVER} alt="" className="absolute inset-0 w-full h-full object-cover" />
 //       <div className="absolute inset-0 bg-black/40" />
 
 //       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-16">
-//         {/* Header like poster */}
 //         <div className="text-center text-white">
 //           <div className="inline-block px-4 py-1 rounded-full bg-white/10 border border-white/30 text-sm tracking-wide mb-4">
 //             CONTACT US
@@ -102,13 +104,11 @@
 //           <div className="text-lg md:text-xl mt-1 opacity-90 tracking-widest">
 //             — LOVE AT FIRST SIGHT —
 //           </div>
-
 //           <div className="inline-block bg-white/90 text-slate-900 rounded-2xl px-5 py-2 mt-4">
 //             Choose your escape—say yes to paradise!
 //           </div>
 //         </div>
 
-//         {/* Carousel row */}
 //         <div
 //           className="mt-8 md:mt-10"
 //           onPointerDown={onDown}
@@ -119,18 +119,15 @@
 //           <div className="flex items-end justify-center gap-4 md:gap-6">
 //             {items.map((p, idx) => {
 //               const selected = idx === i;
-//               // style: center card larger & lifted; sides slightly smaller
+
 //               const base =
 //                 "rounded-2xl overflow-hidden bg-white/95 backdrop-blur border border-white/40 shadow-xl transition-all duration-300";
 //               const scale = selected ? "scale-[1.06]" : "scale-[0.94]";
 //               const lift = selected ? "-translate-y-2" : "translate-y-0 opacity-90";
 //               const w = selected ? "w-[260px] md:w-[320px]" : "w-[200px] md:w-[240px]";
 
-//               const PKG_IMAGES = {
-//                 Tent: "https://images.pexels.com/photos/776117/pexels-photo-776117.jpeg",
-//                 Swiss: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-//                 Room: "https://pix8.agoda.net/hotelImages/34244526/-1/85086b7919064ea18c68a36220862031.jpg?ce=0&s=1024x",
-//               };
+//               const cardImg = PKG_IMAGES[p.name] || DEFAULT_IMG;
+
 //               return (
 //                 <button
 //                   key={p.id}
@@ -139,7 +136,7 @@
 //                   className={`${base} ${scale} ${lift} ${w} text-left`}
 //                 >
 //                   <div className="aspect-[4/5] w-full">
-//                     <img src={img} alt={p.name} className="w-full h-full object-cover" />
+//                     <img src={cardImg} alt={p.name} className="w-full h-full object-cover" />
 //                   </div>
 //                   <div className="p-3 md:p-4">
 //                     <div className="flex items-center justify-between">
@@ -166,20 +163,19 @@
 //           </div>
 //         </div>
 
-//         {/* Dots */}
 //         <div className="mt-6 flex justify-center gap-2">
 //           {dots.map((_, di) => (
 //             <button
 //               key={di}
 //               aria-label={`Go to package ${di + 1}`}
 //               onClick={() => setI(di)}
-//               className={`h-2.5 w-2.5 rounded-full transition
-//                 ${di === i ? "bg-white" : "bg-white/50 hover:bg-white/80"}`}
+//               className={`h-2.5 w-2.5 rounded-full transition ${
+//                 di === i ? "bg-white" : "bg-white/50 hover:bg-white/80"
+//               }`}
 //             />
 //           ))}
 //         </div>
 
-//         {/* Website footer line like poster */}
 //         <div className="mt-6 text-center text-white/90 tracking-widest text-sm">
 //           www.highwaytoheal.com
 //         </div>
@@ -190,17 +186,28 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "https://h2h-backend-vpk9.vercel.app/api";
+const API_BASE = (import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/").replace(/\/+$/, "");
+
 async function fetchPackages() {
   const res = await fetch(`${API_BASE}/packages`);
   if (!res.ok) throw new Error(`Failed to fetch packages: ${res.status}`);
-  return res.json();
+  const data = await res.json();
+
+  // Handle both shapes: array OR { event, packages }
+  const pkgs = Array.isArray(data) ? data : (data?.packages || []);
+  const evt = Array.isArray(data) ? null : (data?.event || null);
+
+  // cache for details/booking pages
+  try { localStorage.setItem("packages", JSON.stringify(pkgs)); } catch {}
+  try { localStorage.setItem("event", JSON.stringify(evt)); } catch {}
+
+  return pkgs;
 }
 
 const COVER =
   "https://assets-news.housing.com/news/wp-content/uploads/2022/09/06125417/North-Indian-14.png";
 
-// ✅ your provided images
+// ✅ your provided images (unchanged)
 const PKG_IMAGES = {
   Tent: "https://images.pexels.com/photos/776117/pexels-photo-776117.jpeg",
   Swiss:
@@ -253,7 +260,9 @@ export default function PackagesShowcase() {
     return () => window.removeEventListener("keydown", onKey);
   }, [items.length]);
 
+  // ⬇ IMPORTANT: Don’t capture pointers when clicking a link (prevents swallowing Link clicks)
   const onDown = (e) => {
+    if (e.target.closest("a, [role='link']")) return;
     e.currentTarget.setPointerCapture?.(e.pointerId);
     startX.current = e.clientX;
     setDragX(0);
@@ -314,13 +323,15 @@ export default function PackagesShowcase() {
               const lift = selected ? "-translate-y-2" : "translate-y-0 opacity-90";
               const w = selected ? "w-[260px] md:w-[320px]" : "w-[200px] md:w-[240px]";
 
-              // ✅ define the variable BEFORE JSX use
               const cardImg = PKG_IMAGES[p.name] || DEFAULT_IMG;
 
               return (
-                <button
+                // Keep wrapper non-interactive for nested Links to work reliably
+                <div
                   key={p.id}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === "Enter") setI(idx); }}
                   onClick={() => setI(idx)}
                   className={`${base} ${scale} ${lift} ${w} text-left`}
                 >
@@ -337,16 +348,29 @@ export default function PackagesShowcase() {
                     <p className="text-xs md:text-sm text-slate-600 mt-1">{p.description}</p>
 
                     {selected && (
-                      <Link
-                        to="/booking"
-                        state={{ package_id: p.id, package: p.name }}
-                        className="inline-block mt-3 md:mt-4 px-4 py-2 rounded-full bg-black/80 text-white hover:bg-black"
-                      >
-                        Book Now
-                      </Link>
+                      <div className="mt-3 md:mt-4 flex gap-2">
+                        <Link
+                          to={`/packages/${p.id}`}
+                          state={{ package_id: p.id, package: p.name }}
+                          className="inline-block px-4 py-2 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-200"
+                          onClick={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          Details
+                        </Link>
+                        <Link
+                          to="/booking"
+                          state={{ package_id: p.id, package: p.name }}
+                          className="inline-block px-4 py-2 rounded-full bg-black/80 text-white hover:bg-black"
+                          onClick={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          Book Now
+                        </Link>
+                      </div>
                     )}
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>
