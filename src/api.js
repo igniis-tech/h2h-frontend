@@ -188,7 +188,7 @@
 // }
 // src/api.js
 // Normalize API base: if the app is on localhost and API is 127.0.0.1 (or ::1), use localhost to keep SameSite happy.
-const RAW_API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000/api/";
+const RAW_API_BASE = import.meta.env.VITE_API_BASE || "https://h2h-backend-vpk9.vercel.app/api/";
 
 function normalizeApiBase(raw) {
   try {
@@ -233,7 +233,7 @@ function snapshotCookies(tag = "default") {
     };
     localStorage.setItem("cookie_snapshot", JSON.stringify(readable));
     sessionStorage.setItem("cookie_snapshot", JSON.stringify(readable));
-  } catch {}
+  } catch { }
 }
 
 // Ensure csrftoken cookie exists (your /health/ has @ensure_csrf_cookie)
@@ -257,7 +257,7 @@ export async function csrfHeaders(extra = {}) {
 }
 
 // Prime on module load (appears in Network)
-try { ensureCsrfCookie(true); } catch {}
+try { ensureCsrfCookie(true); } catch { }
 
 // --------------- SSO ----------------
 export async function startSSO() {
@@ -295,10 +295,10 @@ export async function exchangeCodeForToken({ code, state }) {
   const id_token = payload?.tokens?.id_token || null;
   const user_info = payload?.claims || payload?.user || null;
 
-  try { localStorage.setItem("user_info", JSON.stringify(user_info)); } catch {}
-  try { sessionStorage.setItem("user_info", JSON.stringify(user_info)); } catch {}
-  try { if (access_token) localStorage.setItem("jwt", access_token); } catch {}
-  try { if (access_token) sessionStorage.setItem("jwt", access_token); } catch {}
+  try { localStorage.setItem("user_info", JSON.stringify(user_info)); } catch { }
+  try { sessionStorage.setItem("user_info", JSON.stringify(user_info)); } catch { }
+  try { if (access_token) localStorage.setItem("jwt", access_token); } catch { }
+  try { if (access_token) sessionStorage.setItem("jwt", access_token); } catch { }
 
   snapshotCookies("after-login");
   return { access_token, id_token, user_info, raw: payload };
@@ -317,8 +317,8 @@ export async function checkAvailability({ event_id, property_id, unit_type_id, c
   if (!res.ok) throw new Error("Availability failed");
 
   const data = await res.json();
-  try { localStorage.setItem("last_availability", JSON.stringify(data)); } catch {}
-  try { sessionStorage.setItem("last_availability", JSON.stringify(data)); } catch {}
+  try { localStorage.setItem("last_availability", JSON.stringify(data)); } catch { }
+  try { sessionStorage.setItem("last_availability", JSON.stringify(data)); } catch { }
   return data;
 }
 
@@ -332,8 +332,8 @@ export async function validatePromo({ code, package_id, amount_inr }) {
   if (!res.ok) throw new Error("Promo validate failed");
 
   const data = await res.json();
-  try { localStorage.setItem("last_promo", JSON.stringify(data)); } catch {}
-  try { sessionStorage.setItem("last_promo", JSON.stringify(data)); } catch {}
+  try { localStorage.setItem("last_promo", JSON.stringify(data)); } catch { }
+  try { sessionStorage.setItem("last_promo", JSON.stringify(data)); } catch { }
   return data;
 }
 
@@ -352,8 +352,8 @@ export async function createBooking(payload) {
   }
 
   const data = await res.json();
-  try { localStorage.setItem("last_booking", JSON.stringify(data)); } catch {}
-  try { sessionStorage.setItem("last_booking", JSON.stringify(data)); } catch {}
+  try { localStorage.setItem("last_booking", JSON.stringify(data)); } catch { }
+  try { sessionStorage.setItem("last_booking", JSON.stringify(data)); } catch { }
   snapshotCookies("after-create-booking");
   return data;
 }
@@ -373,14 +373,14 @@ export async function createOrder({ package_id, booking_id, promo_code }) {
   }
 
   const data = await res.json();
-  try { localStorage.setItem("last_order", JSON.stringify(data)); } catch {}
-  try { sessionStorage.setItem("last_order", JSON.stringify(data)); } catch {}
+  try { localStorage.setItem("last_order", JSON.stringify(data)); } catch { }
+  try { sessionStorage.setItem("last_order", JSON.stringify(data)); } catch { }
   snapshotCookies("after-create-order");
   return data;
 }
 
 export function openPaymentLink(url) {
-  try { window.open(url, "_blank", "noopener,noreferrer"); } catch {}
+  try { window.open(url, "_blank", "noopener,noreferrer"); } catch { }
 }
 
 export async function downloadTicket(razorpay_order_id) {

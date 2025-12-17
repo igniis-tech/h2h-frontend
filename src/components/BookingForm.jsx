@@ -1,4 +1,3 @@
-
 // // src/components/BookingForm.jsx
 // import React, { useEffect, useMemo, useState } from 'react';
 // import { useLocation } from 'react-router-dom';
@@ -13,13 +12,13 @@
 // const API_BASE = (import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/api/').replace(/\/+$/, '');
 
 // // --- helpers ---
-// const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } };
+// const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 // const uc = (s) => (s || '').toUpperCase();
 
 // // keep exact code user typed (only trim ends)
 // async function fetchPromoPreview({ code, package_id, amount_inr }) {
 //   const url = new URL(`${API_BASE}/promocodes/validate`);
-//   url.searchParams.set('code', code.trim()); // DO NOT strip spaces
+//   url.searchParams.set('code', code.trim()); // keep inner spaces like "EARLY BIRD"
 //   url.searchParams.set('package_id', String(package_id));
 //   if (amount_inr != null) url.searchParams.set('amount_inr', String(amount_inr));
 //   const res = await fetch(url.toString(), { credentials: 'include' });
@@ -27,64 +26,7 @@
 //   return res.json();
 // }
 
-// // function computePricing(pkg, companions, promoPreview) {
-// //   if (!pkg) return null;
-
-// //   const baseIncludes = Number(pkg.base_includes ?? 1) || 1; // base includes the primary
-// //   const basePrice = Number(pkg.price_inr ?? 0) || 0;
-// //   const extraAdultPrice = Number(pkg.extra_price_adult_inr ?? 0) || 0;
-// //   const childFreeMax = Number(pkg.child_free_max_age ?? 0);
-// //   const childHalfMax = Number(pkg.child_half_max_age ?? 0);
-// //   const halfMult = Number(pkg.child_half_multiplier ?? 0.5);
-
-// //   const totalGuests = 1 + (companions?.length || 0);
-
-// //   // Classify companions only; primary is included in base
-// //   let adults = 0, half = 0, free = 0;
-// //   (companions || []).forEach(c => {
-// //     const age = Number(c.age);
-// //     if (!Number.isFinite(age)) { adults += 1; return; }
-// //     if (age <= childFreeMax) free += 1;
-// //     else if (age <= childHalfMax) half += 1;
-// //     else adults += 1;
-// //   });
-
-// //   // How many beyond base?
-// //   const extrasCount = Math.max(0, totalGuests - baseIncludes);
-// //   const chargeableAdults = Math.min(adults, extrasCount);
-// //   const remainAfterAdults = Math.max(0, extrasCount - chargeableAdults);
-// //   const chargeableHalf = Math.min(half, remainAfterAdults);
-
-// //   const extrasAdultInr = chargeableAdults * extraAdultPrice;
-// //   const extrasHalfInr = chargeableHalf * (extraAdultPrice * halfMult);
-// //   const extrasInr = Math.round(extrasAdultInr + extrasHalfInr);
-
-// //   const subtotal = basePrice + extrasInr;
-
-// //   // Apply promo preview if available
-// //   let discount = 0, total = subtotal;
-// //   if (promoPreview?.valid) {
-// //     if (typeof promoPreview.final_inr === 'number') {
-// //       total = promoPreview.final_inr;
-// //       discount = Math.max(0, subtotal - total);
-// //     } else if (typeof promoPreview.discount_inr === 'number') {
-// //       discount = Math.max(0, promoPreview.discount_inr);
-// //       total = Math.max(0, subtotal - discount);
-// //     }
-// //   }
-
-// //   return {
-// //     base_inr: basePrice,
-// //     extra_adults_count: chargeableAdults,
-// //     extra_half_count: chargeableHalf,
-// //     free_count: free,
-// //     extras_inr: extrasInr,
-// //     subtotal_inr: subtotal,
-// //     discount_inr: discount,
-// //     total_inr: total,
-// //   };
-// // }
-
+// // pricing with explicit adults / half breakdown
 // function computePricing(pkg, companions, promoPreview) {
 //   if (!pkg) return null;
 
@@ -97,17 +39,17 @@
 
 //   const totalGuests = 1 + (companions?.length || 0);
 
-//   // Companions only; primary is included in base
+//   // companions only; primary is included in base
 //   let adults = 0, half = 0, free = 0;
 //   (companions || []).forEach(c => {
 //     const age = Number(c.age);
-//     if (!Number.isFinite(age)) { adults += 1; return; }
+//     if (!Number.isFinite(age)) { adults += 1; return; } // no age treated as adult
 //     if (age <= childFreeMax) free += 1;
 //     else if (age <= childHalfMax) half += 1;
 //     else adults += 1;
 //   });
 
-//   // Beyond base?
+//   // beyond base?
 //   const extrasCount = Math.max(0, totalGuests - baseIncludes);
 //   const chargeableAdults = Math.min(adults, extrasCount);
 //   const remainAfterAdults = Math.max(0, extrasCount - chargeableAdults);
@@ -119,7 +61,7 @@
 
 //   const subtotal = basePrice + extras_inr;
 
-//   // Promo (if previewed)
+//   // promo preview
 //   let discount = 0, total = subtotal;
 //   if (promoPreview?.valid) {
 //     if (typeof promoPreview.final_inr === 'number') {
@@ -145,7 +87,6 @@
 //   };
 // }
 
-
 // export default function BookingForm() {
 //   const { token, profile } = useAuth();
 //   const location = useLocation();
@@ -165,7 +106,7 @@
 //   const [selectedUnitTypeId, setSelectedUnitTypeId] = useState(null);
 
 //   const [promoCode, setPromoCode] = useState('');
-//   const [promoPreview, setPromoPreview] = useState(null); // moved to Details step
+//   const [promoPreview, setPromoPreview] = useState(null); // used on Details step
 
 //   const [form, setForm] = useState({
 //     // display/context
@@ -180,7 +121,7 @@
 //     blood_group: '',
 //     primary_age: '',
 
-//     // companions moved to Package step
+//     // companions (now in Package step)
 //     companions: [],
 
 //     // backend slice (hidden)
@@ -193,8 +134,8 @@
 //   useEffect(() => {
 //     let info = profile;
 //     if (!info) {
-//       try { info = JSON.parse(localStorage.getItem('user_info') || 'null'); } catch { }
-//       if (!info) { try { info = JSON.parse(sessionStorage.getItem('user_info') || 'null'); } catch { } }
+//       try { info = JSON.parse(localStorage.getItem('user_info') || 'null'); } catch {}
+//       if (!info) { try { info = JSON.parse(sessionStorage.getItem('user_info') || 'null'); } catch {} }
 //     }
 //     if (info) {
 //       const name = info.name || [info.given_name, info.family_name].filter(Boolean).join(' ') || '';
@@ -234,7 +175,7 @@
 //             ...f,
 //             package_id: Number(pkg.id),
 //             package: pkg.name || f.package,
-//             category: uc(pkg.name || f.category),
+//             category: uc(pkg.name || f.category), // keep category in sync with selected package
 //           }));
 //         }
 //       } catch (e) {
@@ -256,6 +197,7 @@
 //         u.searchParams.set('event_id', String(form.event_id));
 //         u.searchParams.set('package_id', String(form.package_id));
 //         const res = await fetch(u.toString(), { credentials: 'include' });
+//         if (!res.ok) throw new Error('availability failed');
 //         const data = await res.json();
 //         if (!alive) return;
 
@@ -265,13 +207,18 @@
 //         const allowed = data?.package?.allowed_unit_types || [];
 //         setUnitTypes(allowed);
 //         if (allowed.length) {
-//           setSelectedUnitTypeId((prev) =>
+//           setSelectedUnitTypeId(prev =>
 //             prev && allowed.some(x => Number(x.id) === Number(prev)) ? prev : Number(allowed[0].id)
 //           );
+//         } else {
+//           setSelectedUnitTypeId(null);
 //         }
 //         setMsg(`Available: ${data.available_units} (capacity ${data.total_capacity})`);
 //       } catch (e) {
 //         console.error(e);
+//         setAvailability(null);
+//         setUnitTypes([]);
+//         setSelectedUnitTypeId(null);
 //         setMsg('Availability check failed.');
 //       }
 //     }
@@ -285,7 +232,7 @@
 //     return computePricing(packageInfo, form.companions, promoPreview);
 //   }, [packageInfo, form.companions, promoPreview]);
 
-//   // ----- Companions edit helpers (now on Package step) -----
+//   // ----- Companions edit helpers (on Package step) -----
 //   const addCompanion = () =>
 //     setForm(f => ({ ...f, companions: [...(f.companions || []), { name: '', age: '', blood_group: '' }] }));
 //   const removeCompanion = (idx) =>
@@ -309,12 +256,14 @@
 //   const prev = () => setStep((s) => Math.max(s - 1, 0));
 //   const handle = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-//   // ----- Promo & Pricing (now on Details step) -----
+//   // ----- Promo & Pricing (Details step) -----
 //   const previewPromo = async () => {
 //     if (!promoCode.trim() || !packageInfo) { setPromoPreview(null); return; }
 //     try {
-//       // Preview against subtotal (base + extras) with current companions
-//       const approxAmount = computePricing(packageInfo, form.companions, null)?.subtotal_inr ?? packageInfo.price_inr ?? 0;
+//       const approxAmount =
+//         computePricing(packageInfo, form.companions, null)?.subtotal_inr ??
+//         packageInfo.price_inr ??
+//         0;
 //       setMsg('Checking promo…');
 //       const data = await fetchPromoPreview({
 //         code: promoCode, // keep spaces
@@ -338,18 +287,16 @@
 //     try {
 //       const payload = {
 //         event_id: Number(form.event_id),
-//         property_id: Number(form.property_id),
-//         unit_type_id: Number(selectedUnitTypeId),
+//         package_id: Number(form.package_id),
 //         category: uc(packageInfo?.name || form.category),
 
-//         package_id: Number(form.package_id),
-//         promo_code: promoCode.trim() || undefined,
-
 //         blood_group: uc(form.blood_group).slice(0, 5),
+//         primary_age: form.primary_age === '' ? undefined : Number(form.primary_age),
+
 //         emergency_contact_name: (form.name || '').trim(),
 //         emergency_contact_phone: (form.phone || '').trim().slice(0, 32),
 
-//         primary_age: form.primary_age === '' ? undefined : Number(form.primary_age),
+//         promo_code: promoCode.trim() || undefined,
 
 //         companions: (form.companions || [])
 //           .map(c => ({
@@ -432,7 +379,7 @@
 //         </div>
 //       )}
 
-//       {/* STEP 0: Event + Primary (kept) + User preview */}
+//       {/* STEP 0: Event + Primary + User preview */}
 //       {step === 0 && (
 //         <div className="grid md:grid-cols-2 gap-4">
 //           <div className="md:col-span-2">
@@ -484,7 +431,7 @@
 //         </div>
 //       )}
 
-//       {/* STEP 1: Package + Stay Type + Companions + Availability (COMPANIONS MOVED HERE) */}
+//       {/* STEP 1: Package + Stay Type + Companions + Availability */}
 //       {step === 1 && (
 //         <div className="space-y-4">
 //           <div className="grid md:grid-cols-2 gap-4">
@@ -538,7 +485,7 @@
 //             )}
 //           </div>
 
-//           {/* Companions editor (moved to this step) */}
+//           {/* Companions editor */}
 //           <div>
 //             <div className="flex items-center justify-between">
 //               <label className="label">Companions</label>
@@ -586,7 +533,7 @@
 //         </div>
 //       )}
 
-//       {/* STEP 2: Details + Promo + Pricing (MOVED HERE) */}
+//       {/* STEP 2: Details + Promo + Pricing */}
 //       {step === 2 && (
 //         <div className="space-y-4">
 //           <div className="grid md:grid-cols-2 gap-4">
@@ -642,7 +589,6 @@
 //               </div>
 //             </div>
 //           )}
-
 //         </div>
 //       )}
 
@@ -691,7 +637,6 @@
 //               </div>
 //             </div>
 //           )}
-
 
 //           <div className="pt-2 text-xs text-slate-500">
 //             Hidden slice: event {form.event_id} · property {form.property_id} · unit {selectedUnitTypeId} · {uc(packageInfo?.name || form.category)}
@@ -756,16 +701,6 @@
 
 
 
-
-//
-
-
-
-//
-
-
-
-
 // src/components/BookingForm.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -773,14 +708,14 @@ import {
   createBooking,
   createOrder,
   openPaymentLink,
-  downloadTicket,
+  downloadTicketSmart, // ⬅️ use the smart downloader
 } from '../api';
 import { useAuth } from '../state/AuthContext';
 
 const API_BASE = (import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/api/').replace(/\/+$/, '');
 
 // --- helpers ---
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } };
 const uc = (s) => (s || '').toUpperCase();
 
 // keep exact code user typed (only trim ends)
@@ -875,6 +810,7 @@ export default function BookingForm() {
 
   const [promoCode, setPromoCode] = useState('');
   const [promoPreview, setPromoPreview] = useState(null); // used on Details step
+  const [paymentType, setPaymentType] = useState('FULL'); // FULL or ADVANCE
 
   const [form, setForm] = useState({
     // display/context
@@ -902,8 +838,8 @@ export default function BookingForm() {
   useEffect(() => {
     let info = profile;
     if (!info) {
-      try { info = JSON.parse(localStorage.getItem('user_info') || 'null'); } catch {}
-      if (!info) { try { info = JSON.parse(sessionStorage.getItem('user_info') || 'null'); } catch {} }
+      try { info = JSON.parse(localStorage.getItem('user_info') || 'null'); } catch { }
+      if (!info) { try { info = JSON.parse(sessionStorage.getItem('user_info') || 'null'); } catch { } }
     }
     if (info) {
       const name = info.name || [info.given_name, info.family_name].filter(Boolean).join(' ') || '';
@@ -1052,21 +988,25 @@ export default function BookingForm() {
   async function submit() {
     setSaving(true);
     setMsg('Creating booking…');
+
+    // Calculate final amount
+    const totalInr = pricing?.total_inr || pricing?.subtotal_inr || 0;
+    const isAdvance = paymentType === 'ADVANCE';
+    const finalAmountInr = isAdvance ? 1000 : totalInr;
+
     try {
       const payload = {
         event_id: Number(form.event_id),
-        property_id: Number(form.property_id),
-        unit_type_id: Number(selectedUnitTypeId),
+        package_id: Number(form.package_id),
         category: uc(packageInfo?.name || form.category),
 
-        package_id: Number(form.package_id),
-        promo_code: promoCode.trim() || undefined,
-
         blood_group: uc(form.blood_group).slice(0, 5),
+        primary_age: form.primary_age === '' ? undefined : Number(form.primary_age),
+
         emergency_contact_name: (form.name || '').trim(),
         emergency_contact_phone: (form.phone || '').trim().slice(0, 32),
 
-        primary_age: form.primary_age === '' ? undefined : Number(form.primary_age),
+        promo_code: promoCode.trim() || undefined,
 
         companions: (form.companions || [])
           .map(c => ({
@@ -1087,6 +1027,8 @@ export default function BookingForm() {
         package_id: Number(form.package_id),
         booking_id: booking.id,
         promo_code: promoCode.trim() || undefined,
+        amount: Math.round(finalAmountInr * 100), // paise
+        payment_type: paymentType,
       });
 
       const rpOrderId = orderRes?.order?.id;
@@ -1107,6 +1049,12 @@ export default function BookingForm() {
         rpOrderId,
         payment_link,
         pricing_snapshot: orderRes?.pricing_snapshot,
+        // keep the returned stable paths (preferred by downloader)
+        ticketPaths: {
+          by_order: orderRes?.ticket_api_path_by_order || null,
+          by_booking: orderRes?.ticket_api_path_by_booking || null,
+          by_rp: orderRes?.ticket_api_path || null,
+        },
       });
       setStep(4);
       setMsg('Order created. Complete payment in the opened tab.');
@@ -1411,6 +1359,44 @@ export default function BookingForm() {
           <div className="pt-2 text-xs text-slate-500">
             Hidden slice: event {form.event_id} · property {form.property_id} · unit {selectedUnitTypeId} · {uc(packageInfo?.name || form.category)}
           </div>
+
+          {/* Payment Selection */}
+          {(pricing?.total_inr || pricing?.subtotal_inr || 0) > 1000 && (
+            <div className="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+              <div className="font-semibold text-indigo-900 mb-2">Payment Option</div>
+              <div className="flex flex-col gap-2">
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-indigo-100/50">
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="FULL"
+                    checked={paymentType === 'FULL'}
+                    onChange={() => setPaymentType('FULL')}
+                    className="accent-indigo-600 w-5 h-5"
+                  />
+                  <div>
+                    <div className="font-medium text-indigo-950">Pay Full Amount</div>
+                    <div className="text-sm text-indigo-700">₹{(pricing?.total_inr || pricing?.subtotal_inr || 0).toLocaleString('en-IN')} now</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-indigo-100/50">
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="ADVANCE"
+                    checked={paymentType === 'ADVANCE'}
+                    onChange={() => setPaymentType('ADVANCE')}
+                    className="accent-indigo-600 w-5 h-5"
+                  />
+                  <div>
+                    <div className="font-medium text-indigo-950">Pay Advance Only</div>
+                    <div className="text-sm text-indigo-700">₹1,000 now, rest later</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1432,8 +1418,22 @@ export default function BookingForm() {
                 Open Payment Link
               </a>
             ) : null}
-            {result.rpOrderId ? (
-              <button className="btn bg-slate-100" onClick={() => downloadTicket(result.rpOrderId)}>
+            {(result?.orderDb?.id || result?.booking?.id || result?.rpOrderId) ? (
+              <button
+                className="btn bg-slate-100"
+                onClick={async () => {
+                  try {
+                    await downloadTicketSmart({
+                      // rp_order_id: result?.rpOrderId || null,
+                      order_db_id: result?.orderDb?.id ?? null,
+                      // booking_id: result?.booking?.id ?? null,
+                      paths: result?.ticketPaths || null,
+                    });
+                  } catch (e) {
+                    alert(e?.message || "Ticket not ready yet. Please try again in a few seconds.");
+                  }
+                }}
+              >
                 Download Ticket (PDF)
               </button>
             ) : null}
